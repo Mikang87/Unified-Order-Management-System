@@ -1,0 +1,17 @@
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.pyc
+
+# Environments
+.env # 민감 정보 포함! 절대 커밋 금지!
+venv/
+.venv/
+
+# DB Data & Logs
+*.sqlite
+*.db
+*.log
+
+# IDE specific files
+.idea/
+.vscode/
