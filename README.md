@@ -23,30 +23,46 @@
 
 3. 주문 관리 및 모니터링 (Order Management & Monitoring)
 
-## 🏃 시작하는 방법 (Getting Started)
+## 파일 구조
+uc-oms/
 
-### Prerequisites
-* Docker 및 Docker Compose
-* Python 3.14
+├── .env.example
 
-1.  **Repository Clone:**
-    ```bash
-    git clone <저장소 URL>
-    cd uc-oms
-    ```
-2.  **환경 설정:**
-    * `.env.example` 파일을 복사하여 `.env`를 생성하고 DB 접속 정보 및 JWT Secret Key 등을 설정합니다.
-3.  **Docker Compose 실행:**
-    ```bash
-    docker-compose up --build -d
-    ```
-4.  **DB 마이그레이션 적용:**
-    ```bash
-    # alembic을 사용했을 경우 명령어 명시 (예시)
-    docker exec -it uc_oms_app alembic upgrade head
-    ```
-5.  **접속 확인:**
-    * FastAPI Docs: `http://localhost:8000/docs`
+├── requirements.txt
+
+├── Dockerfile
+
+├── docker-compose.yml
+
+└── app/
+
+├── main.py
+
+├── core/
+
+│   ├── config.py             # 기본 설정 로드
+
+│   ├── security.py           # 암호화/복호화 모듈
+
+│   └── database.py           # DB 세션 및 연결 설정
+
+├── api/v1/
+
+│   └── admin/
+
+│       └── channels.py       # 관리자 채널 CRUD 라우터
+
+├── models/
+
+│   └── channel.py            # ChannelConfig ORM 모델
+
+├── schemas/
+
+│   └── channel.py            # ChannelConfig Pydantic 스키마
+
+└── services/
+
+└── channel_service.py  
 
 ## 🤝 기여자 및 라이선스
 
