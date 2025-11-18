@@ -1,4 +1,4 @@
-## 🌐 통합 주문 관리 시스템 (Unified Order Management System, UOMS)
+# 🌐 통합 주문 관리 시스템 (Unified Order Management System, UOMS)
 
 ## 🚀 프로젝트 개요 (Project Overview)
 **여러 이커머스 채널(스마트 스토어, 쿠팡 등)의 주문 데이터를 통합하여 단일 대시보드에서 관리할 수 있는 중앙 집중식 관리 시스템 구축. 관리자 측면의 기능(API 연동, 데이터 표준화, CRUD) 구현에 중점을 둔 백엔드 개발 프로젝트입니다.**
