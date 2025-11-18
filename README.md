@@ -23,9 +23,9 @@
 
 3. 주문 관리 및 모니터링 (Order Management & Monitoring)
 
-🏃 시작하는 방법 (Getting Started)
+## 🏃 시작하는 방법 (Getting Started)
 
-## Prerequisites
+### Prerequisites
 * Docker 및 Docker Compose
 * Python 3.14
 
