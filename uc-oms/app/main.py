@@ -1,18 +1,55 @@
-"""FastAPI 애플리케이션 엔트리 포인트."""
+from fastapi import FastAPI, APIRouter
+from api.v1.admin.channels import router as channel_router
+from core.database import Base, engine
+from core.config import settings
 
-from __future__ import annotations
+# 1. FastAPI 애플리케이션 인스턴스 생성 및 설정
+app = FastAPI(
+    title="UOMS API", 
+    description="통합 주문 관리 시스템 백엔드 API",
+    version="1.0.0",
+    docs_url="/docs",       # Swagger UI 경로
+    redoc_url="/redoc"      # ReDoc 문서 경로
+)
 
-from fastapi import FastAPI
+# 2. 데이터베이스 테이블 초기화 (선택적)
+# 애플리케이션 시작 시점에 ORM 모델에 정의된 테이블이 DB에 존재하는지 확인하고 생성합니다.
+# NOTE: Alembic과 같은 DB 마이그레이션 툴 사용 시 이 코드는 주석 처리하거나 제거해야 합니다.
+def create_db_tables():
+    """
+    SQLAlchemy Base와 Engine을 사용하여 모든 모델의 테이블을 생성합니다.
+    """
+    try:
+        # models에서 정의된 모든 테이블을 DB에 생성합니다. (models 파일들을 import 해야 Base가 인식함)
+        from models import channel # channel 모델을 import 하여 Base에 등록
+        Base.metadata.create_all(bind=engine)
+        print("Database tables created successfully (if not already existing).")
+    except Exception as e:
+        print(f"Error creating database tables: {e}")
 
-# from app.api.v1.admin import channels
+# 3. 라우터 포함 (경로 설정)
+# 모든 API는 /api/v1/ 접두어를 사용하여 버전 관리를 합니다.
+API_V1_PREFIX = "/api/v1"
+
+# 3.1. 관리자 API 라우터 포함
+admin_router = APIRouter(prefix="/admin")
+admin_router.include_router(channel_router) # /admin/channels 로 경로 설정
+
+# 3.2. 메인 애플리케이션에 라우터 연결
+app.include_router(admin_router, prefix=API_V1_PREFIX)
 
 
-def create_app() -> FastAPI:
-    """FastAPI 애플리케이션을 초기화하고 라우터를 연결한다."""
+# 4. 애플리케이션 이벤트 처리 (Startup)
+# Uvicorn이 서버를 시작할 때 실행될 함수를 등록합니다.
+@app.on_event("startup")
+async def startup_event():
+    print(f"Starting UOMS API in DEBUG={settings.DEBUG} mode.")
+    # 개발 환경에서만 테이블을 자동 생성하도록 설정 (프로덕션에서는 마이그레이션 툴 사용)
+    if settings.DEBUG:
+        create_db_tables()
 
-    application = FastAPI(title="UC-OMS", version="0.1.0")
-    # application.include_router(channels.router, prefix="/api/v1/admin", tags=["channels"])
-    return application
 
-
-app = create_app()
+# 5. 루트 경로 (선택적)
+@app.get("/", tags=["Root"])
+def read_root():
+    return {"message": "UOMS API is running!", "version": app.version}
