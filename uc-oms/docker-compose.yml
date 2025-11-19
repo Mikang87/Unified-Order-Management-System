@@ -1,0 +1,35 @@
+version: '3.8'
+
+services:
+  # 1. FastAPI 애플리케이션 서비스
+  web:
+    build: .
+    command: uvicorn app.main:app --reload --host 0.0.0.0 --port 8000
+    volumes:
+      - .:/usr/src/app # 로컬 변경 사항을 즉시 반영
+    ports:
+      - "8000:8000"
+    env_file:
+      - .env # 환경 변수 파일 로드
+    depends_on:
+      - db
+
+  # 2. MySQL 데이터베이스 서비스
+  db:
+    image: mysql:8.0
+    container_name: uoms_mysql
+    env_file:
+      - .env
+    environment:
+      # .env에 설정된 변수를 MySQL에서 인식하도록 매핑
+      MYSQL_ROOT_PASSWORD: ${MYSQL_PASSWORD} 
+      MYSQL_DATABASE: ${MYSQL_DATABASE}
+      MYSQL_USER: ${MYSQL_USER}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+    volumes:
+      - db_data:/var/lib/mysql # 데이터 영속성 유지
+    ports:
+      - "3306:3306"
+
+volumes:
+  db_data:
