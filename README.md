@@ -62,7 +62,11 @@ uc-oms/
 
 └── services/
 
-└── channel_service.py  
+└── channel_service.py 
+
+## Swagger UI 구동 화면
+<img width="1902" height="962" alt="image" src="https://github.com/user-attachments/assets/afc39f87-3926-475d-a83d-e2d60ed949d7" />
+
 
 ## 🤝 기여자 및 라이선스
 
