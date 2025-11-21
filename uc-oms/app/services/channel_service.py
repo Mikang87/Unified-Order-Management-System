@@ -2,14 +2,14 @@ from sqlalchemy.orm import Session
 from typing import List, Optional
 
 from models.channel import ChannelConfig
-from schemas.channel import ChannelCreate, ChannelUpdate
+from schemas.channel import ChannelConfigCreate, ChannelConfigUpdate
 from core import security
 
 # ====================================================================
 # 1. CREATE: 채널 생성
 # ====================================================================
 
-def create_channel(db: Session, channel: ChannelCreate) -> ChannelConfig:
+def create_channel(db: Session, channel: ChannelConfigCreate) -> ChannelConfig:
     """
     새 채널 정보를 DB에 저장합니다. 
     저장 전 api_key와 api_secret을 암호화합니다.
@@ -58,7 +58,7 @@ def get_channels(db: Session, skip: int = 0, limit: int = 100) -> List[ChannelCo
 # 4. UPDATE: 채널 수정
 # ====================================================================
 
-def update_channel(db: Session, channel_id: int, channel_update: ChannelUpdate) -> Optional[ChannelConfig]:
+def update_channel(db: Session, channel_id: int, channel_update: ChannelConfigUpdate) -> Optional[ChannelConfig]:
     """
     ID에 해당하는 채널 정보를 업데이트합니다.
     api_key나 api_secret이 제공되면 암호화 후 업데이트합니다.

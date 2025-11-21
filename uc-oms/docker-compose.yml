@@ -11,6 +11,8 @@ services:
       - "8000:8000"
     env_file:
       - .env # 환경 변수 파일 로드
+    environment:
+      - PYTHONPATH=/usr/src/app/app
     depends_on:
       - db
 

@@ -4,7 +4,7 @@ from typing import List
 
 from core.database import get_db
 from services import channel_service
-from schemas.channel import ChannelCreate, ChannelUpdate, ChannelRead
+from schemas.channel import ChannelConfigCreate, ChannelConfigUpdate, ChannelConfigRead
 
 # 1. FastAPI 라우터 객체 생성
 # prefix와 tags를 설정하여 Swagger/Redoc 문서에서 경로와 그룹을 명시합니다.
@@ -20,12 +20,12 @@ router = APIRouter(
 # ----------------------------------------------------
 @router.post(
     "/", 
-    response_model=ChannelRead, 
+    response_model=ChannelConfigRead, 
     status_code=status.HTTP_201_CREATED,
     summary="새로운 쇼핑몰 채널을 등록하고 API Secret을 암호화하여 저장"
 )
 def create_channel_endpoint(
-    channel: ChannelCreate, 
+    channel: ChannelConfigCreate, 
     db: Session = Depends(get_db) # DB 세션 의존성 주입
 ):
     """
@@ -42,7 +42,7 @@ def create_channel_endpoint(
 # ----------------------------------------------------
 @router.get(
     "/", 
-    response_model=List[ChannelRead],
+    response_model=List[ChannelConfigRead],
     summary="등록된 모든 채널 설정 정보를 페이지네이션하여 조회"
 )
 def read_channels_endpoint(
@@ -62,7 +62,7 @@ def read_channels_endpoint(
 # ----------------------------------------------------
 @router.get(
     "/{channel_id}", 
-    response_model=ChannelRead,
+    response_model=ChannelConfigRead,
     summary="특정 ID의 채널 정보를 조회"
 )
 def read_channel_endpoint(
@@ -83,12 +83,12 @@ def read_channel_endpoint(
 # ----------------------------------------------------
 @router.put(
     "/{channel_id}", 
-    response_model=ChannelRead,
+    response_model=ChannelConfigRead,
     summary="특정 ID의 채널 정보를 수정 (API Secret이 포함되면 자동 암호화)"
 )
 def update_channel_endpoint(
     channel_id: int, 
-    channel: ChannelUpdate,
+    channel: ChannelConfigUpdate,
     db: Session = Depends(get_db)
 ):
     # Service 계층의 update_channel 함수 호출
