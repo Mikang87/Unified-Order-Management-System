@@ -69,14 +69,56 @@ uc-oms/
 
 └── channel_service.py 
 
+## 프로젝트 구동 가이드  
+**1. 전제조건**  
+>프로젝트를 실행하려면 시스템에 다음 소프트웨어가 설치되어 있어야 합니다.  
+>+ **Git:** 소스 코드 클론을 위해 필요합니다.  
+>+ **Docker 및 Docker Compose:** 애플리케이션 및 MySQL 데이터베이스 컨테이너를 빌드하고 실행하기 위해 필요합니다.
+
+**2. 프로젝트 초기 설정**  
+>**2.1. 소스 코드 다운로드**
+```bash
+git clone https://github.com/Mikang87/Unified-Order-Management-System  
+cd uc-oms
+```
+>**2.2. 환경 설정 파일(.env) 생성 및 수정(필수)**  
+> >.env 파일은 데이터베이스 연결 정보, 비밀 키 등 개인 설정 정보를 담고 있으므로, .env.example 파일을 복사하여 사용합니다.
+> >1. .env.example 파일을 복사하여 .env 파일을 생성합니다.
+```bash 
+cp .env.example .env
+```
+> >3. .env 파일을 열고 다음 필수 변수를 설정합니다.  
+> >**MYSQL_USER:**
+> >**MYSQL_PASSWORD:**
+> >**MYSQL_HOST:**
+> >**MYSQL_DATABASE:**
+> >**SECRET_KEY:**
+
+**3. Docker Compose 실행**
+>모든 설정이 완료되면, Docker Compose를 사용하여 웹 서버와 데이터베이스를 함께 구동합니다.
+>**3.1. 이미지 빌드**
+>Dockerfile과 requirement.txt에 정의된 의존성을 기반으로 웹 서버 이미지를 빌드합니다.
+```bash
+docker-compose build --no-cache web
+```
+>**3.2 컨테이너 실행**
+>MySQL 데이터베이스와 Uvicorn 웹 서버 컨테이너를 실행하고 연결합니다.
+```bash
+docker-compose up
+```
+**4. 구동 확인 및 API 접속**  
+>컨테이너가 성공적으로 시작되면 웹서버(uc-oms-web-1) 로그에 Application startup complete. 메시지가 출력됩니다.  
+>서버 상태: http://localhost:8000 | 서버의 기본 상태 메시지를 확인합니다.  
+>API 문서: http://localhost:8000/docs | FastAPI의 자동 생성된 Swagger UI를 통해 API 엔드포인트 목록을 확인합니다.  
+
 ## 🛑 TroubleShooting
 **1. MySQL 드라이버 관련 오류(NoSuchModuleError)**  
-  sqlalchemy.exc.NoSuchModuleError: Can't load plugin: sqlalchemy.dialects:mysql.mysqldb  
-  빌드에 필요한 C 라이브러리 부족으로 판단되어 mysqlclient 대신 pymysql 드라이버를 사용하도록 변경함.  
+>sqlalchemy.exc.NoSuchModuleError: Can't load plugin: sqlalchemy.dialects:mysql.mysqldb  
+>빌드에 필요한 C 라이브러리 부족으로 판단되어 mysqlclient 대신 pymysql 드라이버를 사용하도록 변경함.  
   
 **2. Python 모듈 임포트 오류(ImportError)**  
-  ImportError: cannot import name 'ChannelCreate' from 'schemas.channel'  
-  Schema 파일의 클래스 이름과 임포트 하는 클래스 이름의 불일치 문제. 임포트하는 파일(app/services/channel_service.py, app/api/v1/admin/channels.py)에서의 클래스 이름을 스키마 파일에서 정의된 실제 이름으로 통일함.  
+>ImportError: cannot import name 'ChannelCreate' from 'schemas.channel'  
+>Schema 파일의 클래스 이름과 임포트 하는 클래스 이름의 불일치 문제. 임포트하는 파일(app/services/channel_service.py, app/api/v1/admin/channels.py)에서의 클래스 이름을 스키마 파일에서 정의된 실제 이름으로 통일함.  
 
 ## 🤝 기여자 및 라이선스
 
