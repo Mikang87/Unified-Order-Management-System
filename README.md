@@ -17,8 +17,7 @@
 3. **컨테이너:** Docker | 개발 환경 구축 및 배포 환경 구성을 위한 컨테이너화
 
 ## 📂 프로젝트 구조 및 핵심 기능 구현 현황
-1. 관리자 채널 설정 (Admin Channel Configuration) (완료)
-2. 
+1. 관리자 채널 설정 (Admin Channel Configuration) (완료)  
 <img width="1902" height="962" alt="image" src="https://github.com/user-attachments/assets/afc39f87-3926-475d-a83d-e2d60ed949d7" />
 
 3. 주문 데이터 통합 및 수집 (Order Integration & Collector)
@@ -67,18 +66,19 @@ uc-oms/
 └── channel_service.py 
 
 ## 🛑 TroubleShooting
-1. MySQL 드라이버 관련 오류(NoSuchModuleError)
-sqlalchemy.exc.NoSuchModuleError: Can't load plugin: sqlalchemy.dialects:mysql.mysqldb
-빌드에 필요한 C 라이브러리 부족으로 판단되어 mysqlclient 대신 pymysql 드라이버를 사용하도록 변경함.
-2. Python 모듈 임포트 오류(ImportError)
-ImportError: cannot import name 'ChannelCreate' from 'schemas.channel'
-Schema 파일의 클래스 이름과 임포트 하는 클래스 이름의 불일치 문제. 임포트하는 파일(app/services/channel_service.py, app/api/v1/admin/channels.py)에서의 클래스 이름을 스키마 파일에서 정의된 실제 이름으로 통일함.
+**1. MySQL 드라이버 관련 오류(NoSuchModuleError)**  
+  sqlalchemy.exc.NoSuchModuleError: Can't load plugin: sqlalchemy.dialects:mysql.mysqldb  
+  빌드에 필요한 C 라이브러리 부족으로 판단되어 mysqlclient 대신 pymysql 드라이버를 사용하도록 변경함.  
+  
+**2. Python 모듈 임포트 오류(ImportError)**  
+  ImportError: cannot import name 'ChannelCreate' from 'schemas.channel'  
+  Schema 파일의 클래스 이름과 임포트 하는 클래스 이름의 불일치 문제. 임포트하는 파일(app/services/channel_service.py, app/api/v1/admin/channels.py)에서의 클래스 이름을 스키마 파일에서 정의된 실제 이름으로 통일함.  
 
 ## 🤝 기여자 및 라이선스
 
 | **백진명** | 프로젝트 리드 개발 및 설계 | [Mikang87](https://github.com/Mikang87) |
 
-License: <선택한 라이선스 (예: MIT License)>
+License: <**MIT License**>
 
 ---
 
