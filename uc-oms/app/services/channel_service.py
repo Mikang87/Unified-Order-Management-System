@@ -1,14 +1,45 @@
 from sqlalchemy.orm import Session
-from typing import List, Optional
+from typing import List, Optional, Dict, Any
+from app.core.config import settings
 
 from models.channel import ChannelConfig
 from schemas.channel import ChannelConfigCreate, ChannelConfigUpdate
-from core import security
+from app.core import security
 
-# ====================================================================
+# 가상의 주문 데이터 정의 (MOCK DATA)
+MOCK_ORDER_DATA= [
+    {
+        "external_order_id": "MOCK-1",
+        "provider_type": "coupang",
+        "order_date": "2025-11-20T10:00:00Z",
+        "total-amount": 45000,
+        "product_name": "Mocking test A"
+    },
+    {
+        "external_order_id": "MOCK-2",
+        "provider_type": "coupang",
+        "order_date": "2025-11-20T10:01:11Z",
+        "total-amount": 21000,
+        "product_name": "Mocking test B"   
+    },
+    {
+        "external_order_id": "MOCK-3",
+        "provider_type": "smartstore",
+        "order_date": "2025-11-20T10:21:22Z",
+        "total-amount": 11000,
+        "product_name": "Mocking test C"   
+    }
+]
+
+# 특정 채널 ID의 설정 정보를 사용하여 외부 API에서 주문 데이터를 수집하는 함수
+async def fetch_orders_from_external_api(channel_config_id: int) -> list[Dict[str,Any]]:
+    if settings.MOCK_COLLECTOR:
+        print(f"--- MOKE MODE: 채널 ID {channel_config_id}의 가상 주문 데이터를 반환합니다.")
+        return MOCK_ORDER_DATA
+    
+    return []
+
 # 1. CREATE: 채널 생성
-# ====================================================================
-
 def create_channel(db: Session, channel: ChannelConfigCreate) -> ChannelConfig:
     """
     새 채널 정보를 DB에 저장합니다. 
@@ -33,10 +64,7 @@ def create_channel(db: Session, channel: ChannelConfigCreate) -> ChannelConfig:
     db.refresh(db_channel)
     return db_channel
 
-# ====================================================================
 # 2. READ: 채널 조회 (단일)
-# ====================================================================
-
 def get_channel(db: Session, channel_id: int) -> Optional[ChannelConfig]:
     """
     ID를 기준으로 단일 채널 정보를 조회합니다.
@@ -44,20 +72,14 @@ def get_channel(db: Session, channel_id: int) -> Optional[ChannelConfig]:
     # DB 조회는 models.channel.py의 ChannelConfig를 사용
     return db.query(ChannelConfig).filter(ChannelConfig.id == channel_id).first()
 
-# ====================================================================
 # 3. READ: 채널 목록 조회
-# ====================================================================
-
 def get_channels(db: Session, skip: int = 0, limit: int = 100) -> List[ChannelConfig]:
     """
     채널 목록을 조회합니다. (Pagination 적용)
     """
     return db.query(ChannelConfig).offset(skip).limit(limit).all()
 
-# ====================================================================
 # 4. UPDATE: 채널 수정
-# ====================================================================
-
 def update_channel(db: Session, channel_id: int, channel_update: ChannelConfigUpdate) -> Optional[ChannelConfig]:
     """
     ID에 해당하는 채널 정보를 업데이트합니다.
@@ -85,10 +107,7 @@ def update_channel(db: Session, channel_id: int, channel_update: ChannelConfigUp
     
     return None
 
-# ====================================================================
 # 5. DELETE: 채널 삭제
-# ====================================================================
-
 def delete_channel(db: Session, channel_id: int) -> bool:
     """
     ID를 기준으로 채널을 삭제합니다.
@@ -102,10 +121,7 @@ def delete_channel(db: Session, channel_id: int) -> bool:
         
     return False
 
-# ====================================================================
 # 6. 유틸리티: 복호화된 Secret 가져오기
-# ====================================================================
-
 def get_decrypted_secret(db: Session, channel_id: int) -> Optional[str]:
     """
     주문 수집을 위해 사용할, 복호화된 API Secret을 반환합니다.

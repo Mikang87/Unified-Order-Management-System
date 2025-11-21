@@ -4,6 +4,9 @@ from pydantic_settings import BaseSettings, SettingsConfigDict # pydantic v2 이
 
 # 1. BaseSettings 상속을 통해 환경 변수를 로드할 설정 클래스 정의
 class Settings(BaseSettings):
+    # MOCK_COLLECTOR 변수 추가
+    MOCK_COLLECTOR: bool = False
+    
     # Pydantic SettingsConfigDict를 사용하여 환경 설정 지정
     model_config = SettingsConfigDict(
         env_file='.env', 

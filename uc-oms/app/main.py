@@ -1,5 +1,6 @@
 from fastapi import FastAPI, APIRouter
 from api.v1.admin.channels import router as channel_router
+from api.v1.test.collector import router as test_collector_router
 from core.database import Base, engine
 from core.config import settings
 
@@ -7,7 +8,7 @@ from core.config import settings
 app = FastAPI(
     title="UOMS API", 
     description="통합 주문 관리 시스템 백엔드 API",
-    version="1.0.0",
+    version="1.0.1",
     docs_url="/docs",       # Swagger UI 경로
     redoc_url="/redoc"      # ReDoc 문서 경로
 )
@@ -37,6 +38,8 @@ admin_router.include_router(channel_router) # /admin/channels 로 경로 설정
 
 # 3.2. 메인 애플리케이션에 라우터 연결
 app.include_router(admin_router, prefix=API_V1_PREFIX)
+# 임시 테스트 라우터 등록
+app.include_router(test_collector_router, prefix="/api/v1", tags=["Test"])
 
 
 # 4. 애플리케이션 이벤트 처리 (Startup)
