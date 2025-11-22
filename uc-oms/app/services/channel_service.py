@@ -53,10 +53,10 @@ def create_channel(db: Session, channel: ChannelConfigCreate) -> ChannelConfig:
     # 암호화된 데이터와 나머지 데이터를 ORM 모델에 맞게 준비
     db_channel = ChannelConfig(
         channel_name=channel.channel_name,
-        channel_type=channel.channel_type,
+        channel_type=channel.provider_type,
         api_key=encrypted_key,       # 암호화된 키 저장
         api_secret=encrypted_secret, # 암호화된 시크릿 저장
-        is_active=channel.is_active
+        is_active=True
     )
     
     db.add(db_channel)

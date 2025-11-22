@@ -43,7 +43,7 @@ class Settings(BaseSettings):
         """
         # driver://user:password@host/database
         # mysqlclient를 사용한다고 가정하고 'mysql://' 대신 'mysql+mysqlclient://'를 사용해도 됩니다.
-        return f"mysql+pymysql://{self.MYSQL_USER}:{self.MYSQL_PASSWORD}@{self.MYSQL_HOST}/{self.MYSQL_DATABASE}"
+        return f"mysql+pymysql://{self.MYSQL_USER}:{self.MYSQL_PASSWORD}@{self.MYSQL_HOST}/{self.MYSQL_DATABASE}?client_flag=2"
         
         # MySQL 8.0 이상에서 Caching SHA2 인증 문제 발생 시: 
         # return f"mysql+mysqlclient://{self.MYSQL_USER}:{self.MYSQL_PASSWORD}@{self.MYSQL_HOST}/{self.MYSQL_DATABASE}?charset=utf8mb4"

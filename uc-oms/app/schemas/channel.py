@@ -4,16 +4,17 @@ from __future__ import annotations
 
 from datetime import datetime
 
-from pydantic import BaseModel, Extra
+from pydantic import BaseModel, Field, ConfigDict
 
 
 class ChannelConfigBase(BaseModel):
     """채널 구성 생성/수정 시 공통으로 사용하는 필드."""
-
-    name: str
-    provider_type: str
+    model_config = ConfigDict(populate_by_name=True)
+    
+    channel_name: str = Field(..., alias="name")
+    provider_type: str = Field(..., alias="type")
     api_key: str
-    secret_key: str
+    api_secret: str = Field(..., alias="secret_key")
 
 
 class ChannelConfigCreate(ChannelConfigBase):
@@ -24,29 +25,28 @@ class ChannelConfigCreate(ChannelConfigBase):
 
 class ChannelConfigRead(BaseModel):
     """민감 정보를 제외하고 채널 구성을 노출하는 응답 스키마."""
-
+    model_config = ConfigDict(
+        from_attributes=True,
+        populate_by_name=True
+    )
+    
     id: int
-    name: str
-    provider_type: str
-    is_active: bool
+    channel_name: str = Field(..., alias="name")
+    channel_type: str = Field(..., alias="type")
+    is_active: bool = Field(..., alias="active")
     last_sync_at: datetime | None = None
-
-    class Config:
-        """ORM 객체와의 호환 설정."""
-
-        from_attributes = True
 
 
 class ChannelConfigUpdate(BaseModel):
     """채널 구성 수정 시 사용되는 부분 업데이트 스키마."""
+    model_config = ConfigDict(
+        from_attributes=True,
+        extra='forbid'
+    )
 
-    name: str | None = None
-    provider_type: str | None = None
+    channel_name: str | None = Field(None, alias="name")
+    channel_type: str | None = Field(None, alias="type")
     api_key: str | None = None
-    secret_key: str | None = None
-    is_active: bool | None = None
+    api_secret: str | None = Field(None, alias="secret_key")
+    is_active: bool | None = Field(None, alias="active")
 
-    class Config:
-        """허용되지 않은 필드를 차단한다."""
-
-        extra = Extra.forbid
