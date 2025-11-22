@@ -115,13 +115,24 @@ docker-compose up
 >API 문서: http://localhost:8000/docs | FastAPI의 자동 생성된 Swagger UI를 통해 API 엔드포인트 목록을 확인합니다.  
 
 ## 🛑 TroubleShooting
+**25.11.19**  
 **1. MySQL 드라이버 관련 오류(NoSuchModuleError)**  
 >sqlalchemy.exc.NoSuchModuleError: Can't load plugin: sqlalchemy.dialects:mysql.mysqldb  
 >빌드에 필요한 C 라이브러리 부족으로 판단되어 mysqlclient 대신 pymysql 드라이버를 사용하도록 변경함.  
   
 **2. Python 모듈 임포트 오류(ImportError)**  
 >ImportError: cannot import name 'ChannelCreate' from 'schemas.channel'  
->Schema 파일의 클래스 이름과 임포트 하는 클래스 이름의 불일치 문제. 임포트하는 파일(app/services/channel_service.py, app/api/v1/admin/channels.py)에서의 클래스 이름을 스키마 파일에서 정의된 실제 이름으로 통일함.  
+>Schema 파일의 클래스 이름과 임포트 하는 클래스 이름의 불일치 문제. 임포트하는 파일(app/services/channel_service.py, app/api/v1/admin/channels.py)에서의 클래스 이름을 스키마 파일에서 정의된 실제 이름으로 통일함.
+
+---
+**25.11.22**  
+**1. MySQL 인증 오류(Initial Setup)**  
+>**MySQL 연결** | DB 비밀번호에 특정 특수문자(@)가 포함되어 MySQL 초기 설정에서 문제 발생(MySQL 8.0의 보안 강화로 추정) -> 다른 조합으로 비밀번호 변겅.  
+>**원격 접근** | DB 컨테이너 초기화 시점에 애플리케이션 컨테이너가 먼저 시작되어 연결 오류 발생 -> web 서비스 커맨드에 sleep 30을 추가하여 DB 시작 대기 시간 확보.  
+>            | MySQL 8.0에서 기본 인증 방식이 변겅됨. -> grant_remote_access.sh를 수정하여 mysql_native_password 인증 방식을 명시적으로 설정.  
+
+**2. Pydantic 스키마 및 필드명 불일치**  
+> API 요청 본문과 내부 Pydnatic 모델, DB ORM 모델 간의 필드명 불일치 해소  
 
 ## 🤝 기여자 및 라이선스
 
