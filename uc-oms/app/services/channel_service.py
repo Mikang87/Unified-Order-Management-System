@@ -1,10 +1,11 @@
-from sqlalchemy.orm import Session
+from sqlalchemy.ext.asyncio import AsyncSession
+from sqlalchemy import select, update, delete
 from typing import List, Optional, Dict, Any
 from app.core.config import settings
+from app.core import security
 
 from models.channel import ChannelConfig
 from schemas.channel import ChannelConfigCreate, ChannelConfigUpdate
-from app.core import security
 
 # 가상의 주문 데이터 정의 (MOCK DATA)
 MOCK_ORDER_DATA= [
@@ -40,7 +41,7 @@ async def fetch_orders_from_external_api(channel_config_id: int) -> list[Dict[st
     return []
 
 # 1. CREATE: 채널 생성
-def create_channel(db: Session, channel: ChannelConfigCreate) -> ChannelConfig:
+async def create_channel(db: AsyncSession, channel: ChannelConfigCreate) -> ChannelConfig:
     """
     새 채널 정보를 DB에 저장합니다. 
     저장 전 api_key와 api_secret을 암호화합니다.
@@ -60,32 +61,35 @@ def create_channel(db: Session, channel: ChannelConfigCreate) -> ChannelConfig:
     )
     
     db.add(db_channel)
-    db.commit()
-    db.refresh(db_channel)
+    await db.commit()
+    await db.refresh(db_channel)
     return db_channel
 
 # 2. READ: 채널 조회 (단일)
-def get_channel(db: Session, channel_id: int) -> Optional[ChannelConfig]:
+async def get_channel(db: AsyncSession, channel_id: int) -> Optional[ChannelConfig]:
     """
     ID를 기준으로 단일 채널 정보를 조회합니다.
     """
+    stmt = select(ChannelConfig).where(ChannelConfig.id == channel_id)
+    result = await db.execute(stmt)
     # DB 조회는 models.channel.py의 ChannelConfig를 사용
-    return db.query(ChannelConfig).filter(ChannelConfig.id == channel_id).first()
+    return result.scalar_one_or_none()
 
 # 3. READ: 채널 목록 조회
-def get_channels(db: Session, skip: int = 0, limit: int = 100) -> List[ChannelConfig]:
+async def get_channels(db: AsyncSession, skip: int = 0, limit: int = 100) -> List[ChannelConfig]:
     """
     채널 목록을 조회합니다. (Pagination 적용)
     """
-    return db.query(ChannelConfig).offset(skip).limit(limit).all()
-
+    stmt = select(ChannelConfig).offset(skip).limit(limit)
+    result = await db.execute(stmt)
+    return list(result.scalars().all())
 # 4. UPDATE: 채널 수정
-def update_channel(db: Session, channel_id: int, channel_update: ChannelConfigUpdate) -> Optional[ChannelConfig]:
+async def update_channel(db: AsyncSession, channel_id: int, channel_update: ChannelConfigUpdate) -> Optional[ChannelConfig]:
     """
     ID에 해당하는 채널 정보를 업데이트합니다.
     api_key나 api_secret이 제공되면 암호화 후 업데이트합니다.
     """
-    db_channel = get_channel(db, channel_id)
+    db_channel = await get_channel(db, channel_id)
 
     if db_channel:
         update_data = channel_update.model_dump(exclude_unset=True) # 변경된 필드만 가져옴
@@ -101,32 +105,32 @@ def update_channel(db: Session, channel_id: int, channel_update: ChannelConfigUp
         for key, value in update_data.items():
             setattr(db_channel, key, value)
             
-        db.commit()
-        db.refresh(db_channel)
+        await db.commit()
+        await db.refresh(db_channel)
         return db_channel
     
     return None
 
 # 5. DELETE: 채널 삭제
-def delete_channel(db: Session, channel_id: int) -> bool:
+async def delete_channel(db: AsyncSession, channel_id: int) -> bool:
     """
     ID를 기준으로 채널을 삭제합니다.
     """
-    db_channel = get_channel(db, channel_id)
+    stmt = delete(ChannelConfig).where(ChannelConfig.id==channel_id)
+    result = await db.execute(stmt)
     
-    if db_channel:
-        db.delete(db_channel)
-        db.commit()
+    if result.rowcount > 0:
+        await db.commit()
         return True
         
     return False
 
 # 6. 유틸리티: 복호화된 Secret 가져오기
-def get_decrypted_secret(db: Session, channel_id: int) -> Optional[str]:
+async def get_decrypted_secret(db: AsyncSession, channel_id: int) -> Optional[str]:
     """
     주문 수집을 위해 사용할, 복호화된 API Secret을 반환합니다.
     """
-    db_channel = get_channel(db, channel_id)
+    db_channel = await get_channel(db, channel_id)
     
     if db_channel and db_channel.api_secret:
         # 🚨 핵심 보안 로직: 암호화된 Secret을 복호화

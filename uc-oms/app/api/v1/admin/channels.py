@@ -1,5 +1,5 @@
 from fastapi import APIRouter, Depends, HTTPException, status
-from sqlalchemy.orm import Session
+from sqlalchemy.ext.asyncio import AsyncSession
 from typing import List
 
 from core.database import get_db
@@ -24,15 +24,15 @@ router = APIRouter(
     status_code=status.HTTP_201_CREATED,
     summary="새로운 쇼핑몰 채널을 등록하고 API Secret을 암호화하여 저장"
 )
-def create_channel_endpoint(
+async def create_channel_endpoint(
     channel: ChannelConfigCreate, 
-    db: Session = Depends(get_db) # DB 세션 의존성 주입
+    db: AsyncSession = Depends(get_db) # DB 세션 의존성 주입
 ):
     """
     관리자로부터 채널 설정 정보를 받아 암호화 후 저장합니다.
     """
     # Service 계층의 create_channel 함수 호출
-    db_channel = channel_service.create_channel(db, channel)
+    db_channel = await channel_service.create_channel(db, channel)
     
     # ChannelRead 스키마로 변환되어 응답 (보안을 위해 API Secret은 제외됨)
     return db_channel
@@ -45,16 +45,16 @@ def create_channel_endpoint(
     response_model=List[ChannelConfigRead],
     summary="등록된 모든 채널 설정 정보를 페이지네이션하여 조회"
 )
-def read_channels_endpoint(
+async def read_channels_endpoint(
     skip: int = 0, 
     limit: int = 100, 
-    db: Session = Depends(get_db) # DB 세션 의존성 주입
+    db: AsyncSession = Depends(get_db) # DB 세션 의존성 주입
 ):
     """
     등록된 채널 목록을 조회합니다.
     """
     # Service 계층의 get_channels 함수 호출
-    channels = channel_service.get_channels(db, skip=skip, limit=limit)
+    channels = await channel_service.get_channels(db, skip=skip, limit=limit)
     return channels
 
 # ----------------------------------------------------
@@ -65,12 +65,12 @@ def read_channels_endpoint(
     response_model=ChannelConfigRead,
     summary="특정 ID의 채널 정보를 조회"
 )
-def read_channel_endpoint(
+async def read_channel_endpoint(
     channel_id: int, 
-    db: Session = Depends(get_db)
+    db: AsyncSession = Depends(get_db)
 ):
     # Service 계층의 get_channel 함수 호출
-    db_channel = channel_service.get_channel(db, channel_id=channel_id)
+    db_channel = await channel_service.get_channel(db, channel_id=channel_id)
     
     if db_channel is None:
         # 해당 ID의 채널이 없을 경우 404 에러 반환
@@ -86,13 +86,13 @@ def read_channel_endpoint(
     response_model=ChannelConfigRead,
     summary="특정 ID의 채널 정보를 수정 (API Secret이 포함되면 자동 암호화)"
 )
-def update_channel_endpoint(
+async def update_channel_endpoint(
     channel_id: int, 
     channel: ChannelConfigUpdate,
-    db: Session = Depends(get_db)
+    db: AsyncSession = Depends(get_db)
 ):
     # Service 계층의 update_channel 함수 호출
-    updated_channel = channel_service.update_channel(db, channel_id, channel)
+    updated_channel = await channel_service.update_channel(db, channel_id, channel)
     
     if updated_channel is None:
         # 수정 대상 채널이 없을 경우 404 에러 반환
@@ -108,12 +108,12 @@ def update_channel_endpoint(
     status_code=status.HTTP_204_NO_CONTENT,
     summary="특정 ID의 채널을 삭제"
 )
-def delete_channel_endpoint(
+async def delete_channel_endpoint(
     channel_id: int, 
-    db: Session = Depends(get_db)
+    db: AsyncSession = Depends(get_db)
 ):
     # Service 계층의 delete_channel 함수 호출
-    if not channel_service.delete_channel(db, channel_id):
+    if not await channel_service.delete_channel(db, channel_id):
         # 삭제 실패 (채널이 존재하지 않는 경우) 404 에러 반환
         raise HTTPException(status_code=404, detail="Channel not found")
         

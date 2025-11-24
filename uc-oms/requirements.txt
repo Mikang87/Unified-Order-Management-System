@@ -3,6 +3,7 @@ uvicorn[standard] # uvicorn을 사용하여 서버를 실행
 pydantic
 sqlalchemy # ORM
 pymysql # MySQL 드라이버 (또는 asyncpg 등 비동기 드라이버)
+aiomysql # 비동기 MySQL 드라이버
 python-dotenv # .env 파일 로드
 python-jose[cryptography] # JWT 토큰 등을 위한 라이브러리 (보안 모듈에 사용될 수 있음)
 passlib[bcrypt] # 비밀번호 해싱 (보안 모듈에 사용될 수 있음)

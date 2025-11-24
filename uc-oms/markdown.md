@@ -64,10 +64,10 @@ uc-oms/
 1.  **모델명:** `ChannelConfig`
 2.  **필드:**
     * `id`: Primary Key, Integer
-    * `name`: String (255), Unique
-    * `provider_type`: String (50) - 채널 제공자 유형 (예: 'NAVER', 'COUPANG')
+    * `channel_name`: String (255), Unique
+    * `channel_type`: String (50) - 채널 제공자 유형 (예: 'NAVER', 'COUPANG')
     * `api_key`: String (512) - **암호화된 키 저장용**
-    * `secret_key`: String (512) - **암호화된 비밀 키 저장용**
+    * `api_secret`: String (512) - **암호화된 비밀 키 저장용**
     * `is_active`: Boolean, Default=True
     * `last_sync_at`: DateTime, Nullable
 
@@ -114,4 +114,4 @@ Service Layer를 사용하여 관리자용 채널 설정 API 엔드포인트를 
 ### B. 암호화된 키 복호화 테스트 API (선택 사항)
 * **GET /{channel_id}/keys**:
     * **목표:** 관리자가 등록된 채널의 API Key를 **테스트 목적으로 확인**할 수 있도록 구현.
-    * **로직:** `ChannelService`를 통해 채널을 조회 $\rightarrow$ 암호화된 키를 **`decrypt_data`** 함수로 복호화 $\rightarrow$ 복호화된 키를 포함한 응답 (`{"api_key": "복호화된키", "secret_key": "복호화된시크릿"}`)을 반환. (실제 운영에서는 매우 제한적으로 사용해야 함.)
+    * **로직:** `ChannelService`를 통해 채널을 조회 $\rightarrow$ 암호화된 키를 **`decrypt_data`** 함수로 복호화 $\rightarrow$ 복호화된 키를 포함한 응답 (`{"api_key": "복호화된키", "api_secret": "복호화된시크릿"}`)을 반환. (실제 운영에서는 매우 제한적으로 사용해야 함.)
