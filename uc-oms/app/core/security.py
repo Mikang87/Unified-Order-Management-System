@@ -2,7 +2,7 @@ from passlib.context import CryptContext
 from cryptography.fernet import Fernet
 from typing import Optional
 
-from core.config import settings
+from app.core.config import settings
 
 # 1. 비밀번호 해싱을 위한 설정
 # bcrypt는 널리 사용되고 안전한 해싱 알고리즘입니다.

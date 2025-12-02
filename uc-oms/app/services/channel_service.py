@@ -4,8 +4,8 @@ from typing import List, Optional, Dict, Any
 from app.core.config import settings
 from app.core import security
 
-from models.channel import ChannelConfig
-from schemas.channel import ChannelConfigCreate, ChannelConfigUpdate
+from app.models.channel import ChannelConfig
+from app.schemas.channel import ChannelConfigCreate, ChannelConfigUpdate
 
 # 가상의 주문 데이터 정의 (MOCK DATA)
 MOCK_ORDER_DATA= [

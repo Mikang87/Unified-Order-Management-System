@@ -9,3 +9,4 @@ python-jose[cryptography] # JWT 토큰 등을 위한 라이브러리 (보안 모
 passlib[bcrypt] # 비밀번호 해싱 (보안 모듈에 사용될 수 있음)
 cryptography
 pydantic-settings
+alembic

@@ -1,6 +1,6 @@
 from sqlalchemy import Column, Integer, String, Boolean, DateTime, func
 from sqlalchemy.ext.declarative import declarative_base # (선언적 기본 클래스)
-from core.database import Base # core/database.py에서 정의된 Base 클래스를 가져옵니다.
+from app.core.database import Base # core/database.py에서 정의된 Base 클래스를 가져옵니다.
 
 
 # 1. ORM 모델 클래스 정의

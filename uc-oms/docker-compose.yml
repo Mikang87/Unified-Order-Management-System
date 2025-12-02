@@ -4,7 +4,11 @@ services:
   # 1. FastAPI 애플리케이션 서비스
   web:
     build: .
-    command: /bin/bash -c "sleep 30 && uvicorn app.main:app --reload --host 0.0.0.0 --port 8000"
+    restart: always
+    command: /bin/bash -c "alembic upgrade head && uvicorn app.main:app --reload --host 0.0.0.0 --port 8000"
+    depends_on:
+      db:
+        condition: service_healthy
     volumes:
       - .:/usr/src/app # 로컬 변경 사항을 즉시 반영
     ports:
@@ -12,11 +16,10 @@ services:
     env_file:
       - .env # 환경 변수 파일 로드
     environment:
-      - PYTHONPATH=/usr/src/app/app
+      - PYTHONPATH=/usr/src/app
       - DEBUG=True
-      - DATABASE_URL=mysql+pymysql://{self.MYSQL_USER}:{self.MYSQL_PASSWORD}@{self.MYSQL_HOST}/{self.MYSQL_DATABASE}?client_flag=2
-    depends_on:
-      - db
+    #  - DATABASE_URL=mysql+pymysql://{self.MYSQL_USER}:{self.MYSQL_PASSWORD}@{self.MYSQL_HOST}/{self.MYSQL_DATABASE}?client_flag=2
+
 
   # 2. MySQL 데이터베이스 서비스
   db:
@@ -34,6 +37,12 @@ services:
       - db_data:/var/lib/mysql # 데이터 영속성 유지
       # 로컬의 init.sql 파일을 컨테이너의 초기화 디렉토리에 마운트
       - ./grant_remote_access.sh:/docker-entrypoint-initdb.d/grant_remote_access.sh
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-p$$MYSQL_PASSWORD"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 20s
     ports:
       - "3307:3306"
 

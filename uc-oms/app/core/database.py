@@ -2,7 +2,7 @@ from typing import AsyncGenerator, Any
 from sqlalchemy.ext.asyncio import create_async_engine, async_sessionmaker, AsyncSession
 from sqlalchemy.ext.declarative import declarative_base
 
-from core.config import settings
+from app.core.config import settings
 
 # 1. Engine 생성
 # settings.DATABASE_URL: config.py에서 정의한 DB 연결 URL (예: 'mysql+mysqlclient://user:pass@host/db')

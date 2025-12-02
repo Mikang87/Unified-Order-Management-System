@@ -2,9 +2,9 @@ from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.ext.asyncio import AsyncSession
 from typing import List
 
-from core.database import get_db
-from services import channel_service
-from schemas.channel import ChannelConfigCreate, ChannelConfigUpdate, ChannelConfigRead
+from app.core.database import get_db
+from app.services import channel_service
+from app.schemas.channel import ChannelConfigCreate, ChannelConfigUpdate, ChannelConfigRead
 
 # 1. FastAPI 라우터 객체 생성
 # prefix와 tags를 설정하여 Swagger/Redoc 문서에서 경로와 그룹을 명시합니다.

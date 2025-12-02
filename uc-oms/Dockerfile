@@ -9,7 +9,7 @@ RUN apt-get update && apt-get install -y default-libmysqlclient-dev pkg-config g
 COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 
-COPY ./app /usr/src/app/app
+COPY ./app /usr/src/app
 
 # uvicorn으로 main.py의 app 객체를 실행합니다.
 CMD ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8000"]

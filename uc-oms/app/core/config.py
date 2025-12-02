@@ -28,12 +28,6 @@ class Settings(BaseSettings):
     SECRET_KEY: str = Field(..., env='SECRET_KEY')
     ALGORITHM: str = Field("HS256", env='ALGORITHM')
     
-    # ==================
-    # Application Settings
-    # ==================
-    # DEBUG 모드 여부 등 추가 설정 (예시)
-    DEBUG: bool = False
-
 
     # 2. computed property를 사용하여 SQLAlchemy URL 생성
     @property
