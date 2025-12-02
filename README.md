@@ -34,35 +34,35 @@
 ## 파일 구조
 uc-oms/
 
-├── .env.example
-├── requirements.txt
-├── Dockerfile
-├── docker-compose.yml
-├── grand_remote_access.sh
-├── alembic.ini
-│
-├── alembic/
-│   ├── versions/
-│   │   ├── 5c7b62e589f9_create_channel_configs_table.py
-│   │   ├── aefc57bcea3d_initial_database_setup.py
-│   │   └── b0a31c003a59_initial_schema_setup.py
-│   └── env.py
-│
-└── app/
-    ├── main.py
-    ├── core/
-    │   ├── config.py             # 기본 설정 로드
-    │   ├── security.py           # 암호화/복호화 모듈
-    │   └── database.py           # DB 세션 및 연결 설정
-    ├── api/v1/
-    │   └── admin/
-    │       └── channels.py       # 관리자 채널 CRUD 라우터
-    ├── models/
-    │   └── channel.py            # ChannelConfig ORM 모델
-    ├── schemas/
-    │   └── channel.py            # ChannelConfig Pydantic 스키마
-    └── services/
-    └── channel_service.py 
+├── .env.example  
+├── requirements.txt  
+├── Dockerfile  
+├── docker-compose.yml  
+├── grand_remote_access.sh  
+├── alembic.ini  
+│  
+├── alembic/  
+│   ├── versions/  
+│   │   ├── 5c7b62e589f9_create_channel_configs_table.py  
+│   │   ├── aefc57bcea3d_initial_database_setup.py  
+│   │   └── b0a31c003a59_initial_schema_setup.py  
+│   └── env.py  
+│  
+└── app/  
+    ├── main.py  
+    ├── core/  
+    │   ├── config.py             # 기본 설정 로드  
+    │   ├── security.py           # 암호화/복호화 모듈  
+    │   └── database.py           # DB 세션 및 연결 설정  
+    ├── api/v1/  
+    │   └── admin/  
+    │       └── channels.py       # 관리자 채널 CRUD 라우터  
+    ├── models/  
+    │   └── channel.py            # ChannelConfig ORM 모델  
+    ├── schemas/  
+    │   └── channel.py            # ChannelConfig Pydantic 스키마  
+    └── services/  
+    └── channel_service.py    
 
 ## 프로젝트 구동 가이드  
 **1. 전제조건**  
