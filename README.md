@@ -12,7 +12,7 @@
 2025.11.18~
 
 ## 현재 버전
-**v0.0.3** | 비동기 데이터베이스 마이그레이션 완료, 초기 실행 설정 정리
+**v0.0.4** | 다중 채널 상품 조회 API 구현, Collector 패턴을 통한 외부 API 연동 표준화
 
 ## 🛠️ 기술 스택 (Tech Stack)
 1. **Python3.14** | 주력 개발 언어 및 환경, 백엔드 로직 구현.  
@@ -21,48 +21,55 @@
 4. **Uvicorn** | FastAPI를 실행하는 비동기 서버, 실제 프로덕션 환경에서 애플리케이션 서비스 제공.
 5. **MySQL** | 데이터베이스 서버. 채널 설정 및 주문 데이터와 같은 프로젝트 데이터를 영구 저장.
 6. **SQLalchemy** | Python ORM, Python 객체를 통해 데이터베이스와 상호작용.
-7. **Docker** | 컨테이너화 도구, 개발 환경과 배포 환경을 일치시키고 애플리케이션을 격리하여 실행.
+7. **Alembic** | 비동기 데이터베이스 마이그레이션.
+8. **Docker** | 컨테이너화 도구, 개발 환경과 배포 환경을 일치시키고 애플리케이션을 격리하여 실행.
 
 ## 📂 프로젝트 구조 및 핵심 기능 구현 현황
 1. 관리자 채널 설정 (Admin Channel Configuration) (완료)  
 <img width="1902" height="962" alt="image" src="https://github.com/user-attachments/assets/afc39f87-3926-475d-a83d-e2d60ed949d7" />
 
-3. 주문 데이터 통합 및 수집 (Order Integration & Collector)
+2. 주문 데이터 통합 및 수집 (Order Integration & Collector)
 
-4. 주문 관리 및 모니터링 (Order Management & Monitoring)
 
 ## 파일 구조
 uc-oms/
 
-├── .env.example  
-├── requirements.txt  
-├── Dockerfile  
-├── docker-compose.yml  
-├── grand_remote_access.sh  
-├── alembic.ini  
-│  
-├── alembic/  
-│   ├── versions/  
-│   │   ├── 5c7b62e589f9_create_channel_configs_table.py  
-│   │   ├── aefc57bcea3d_initial_database_setup.py  
-│   │   └── b0a31c003a59_initial_schema_setup.py  
-│   └── env.py  
-│  
-└── app/  
-    ├── main.py  
-    ├── core/  
-    │   ├── config.py             # 기본 설정 로드  
-    │   ├── security.py           # 암호화/복호화 모듈  
-    │   └── database.py           # DB 세션 및 연결 설정  
-    ├── api/v1/  
-    │   └── admin/  
-    │       └── channels.py       # 관리자 채널 CRUD 라우터  
-    ├── models/  
-    │   └── channel.py            # ChannelConfig ORM 모델  
-    ├── schemas/  
-    │   └── channel.py            # ChannelConfig Pydantic 스키마  
-    └── services/  
-    └── channel_service.py    
+├── .env
+├── requirements.txt
+├── Dockerfile
+├── docker-compose.yml
+├── grand_remote_access.sh
+├── alembic.ini
+│
+├── alembic/
+│   ├── versions/
+│   │   ├── 5c7b62e589f9_create_channel_configs_table.py
+│   │   ├── aefc57bcea3d_initial_database_setup.py
+│   │   └── b0a31c003a59_initial_schema_setup.py
+│   └── env.py
+│
+└── app/
+    ├── main.py
+    ├── core/
+    │   ├── config.py             # 기본 설정 로드
+    │   ├── security.py           # 암호화/복호화 모듈
+    │   └── database.py           # DB 세션 및 연결 설정
+    ├── api/v1/
+    │   └── admin/
+    │       ├── channels.py       # 관리자 채널 CRUD 라우터
+    │       └── products.py`      # 상품 목록 조회 CRUD 라우터   
+    ├── models/
+    │   └── channel.py            # ChannelConfig ORM 모델
+    ├── schemas/
+    │   └── channel.py            # ChannelConfig Pydantic 스키마
+    ├── collectors                # API를 통한 상품 목록 조회
+    │   ├── base_collector.py     # 모든 외부 채널의 상품 조회 API를 위한 추상 인터ㅔ이스
+    │   ├── coupang_collector.py  # coupang 컬렉터
+    │   ├── smartstore_collector.py  # smartstore 컬렉터
+    │   └── mock_collector.py     # 테스트용(Mock) 컬렉터
+    └── services/
+        ├── channel_service.py  
+        └── product_service.py  
 
 ## 프로젝트 구동 가이드  
 **1. 전제조건**  
