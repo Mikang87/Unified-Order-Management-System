@@ -1,6 +1,6 @@
 import httpx, json, time
 from typing import List, Dict, Any
-from .base_collector import IProductCollector
+from .base_collector import IProductCollector, IOrderCollector
 
 class SmartstoreCollector(IProductCollector):
     BASE_URL = "api.commerce.naver.com"
@@ -83,3 +83,5 @@ class SmartstoreCollector(IProductCollector):
             except Exception as e:
                 raise ConnectionError(f"Smartstore API Connection Failed: {e}") from e
                     
+class SmartstoreOrderCollector(IOrderCollector):
+    pass

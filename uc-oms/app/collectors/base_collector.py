@@ -16,3 +16,22 @@ class IProductCollector(ABC):
         API 키를 사용하여 해당 채널의 상품 목록을 조회하고, 내부 표준화된 상품 형식의 리스트를 반환합니다.
         """
         pass
+    
+class IOrderCollector(ABC):
+    
+    def __init__(self, channel_id: int, api_key: str, api_secret: str):
+        self.channel_id = channel_id
+        self.api_key = api_key
+        self.api_secret = api_secret
+    
+    @abstractmethod
+    async def fetch_orders(self, start_date, end_date) -> List[Dict[str,Any]]:
+        pass
+
+    @abstractmethod
+    async def confirm_order_preparation(self, order_item_ids: List[int]):
+        pass
+
+    @abstractmethod
+    async def register_tracking_and_ship(self, order_item_id: int, courier_code: str, tracking_number: str):
+        pass

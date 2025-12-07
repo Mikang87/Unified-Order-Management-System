@@ -4,6 +4,7 @@ from sqlalchemy import engine_from_config
 from sqlalchemy import pool
 
 from app.models.channel import ChannelConfig
+from app.models.order import Order, OrderItem
 from app.core.database import Base
 from app.core.config import settings
 from sqlalchemy.ext.asyncio import create_async_engine, AsyncConnection

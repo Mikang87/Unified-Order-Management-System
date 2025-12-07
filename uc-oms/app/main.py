@@ -1,6 +1,7 @@
 from fastapi import FastAPI, APIRouter
 from app.api.v1.admin.channels import router as channel_router
 from app.api.v1.admin.products import router as product_router
+from app.api.v1.admin.orders import router as order_router
 from app.core.database import Base, engine
 from app.core.config import settings
 
@@ -36,6 +37,7 @@ API_V1_PREFIX = "/api/v1"
 admin_router = APIRouter(prefix="/admin")
 admin_router.include_router(channel_router) # /admin/channels 로 경로 설정
 admin_router.include_router(product_router)
+admin_router.include_router(order_router)
 
 # 3.2. 메인 애플리케이션에 라우터 연결
 app.include_router(admin_router, prefix=API_V1_PREFIX)

@@ -1,6 +1,6 @@
 import httpx
 from typing import List, Dict, Any
-from .base_collector import IProductCollector
+from .base_collector import IProductCollector, IOrderCollector
 import hmac, hashlib, base64, time
 from urllib.parse import urlencode, urlparse
 
@@ -61,3 +61,6 @@ class CoupangCollector(IProductCollector):
                 raise ConnectionError(f"Coupang API Error: {e.response.status_code} - {e.response.text}") from e
             except Exception as e:
                 raise ConnectionError(f"Coupang API Connection Failed: {e}") from e
+
+class CoupangOrderCollector(IOrderCollector):
+    pass
